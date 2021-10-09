@@ -1,147 +1,97 @@
 #include<stdio.h>
-#include<stdlib.h>
-#define n MAX_SIZE
-int MAX_SIZE=10;
-int cq[n];
-int first=-1;
-int last=-1;
 
-void second(void)
+struct queue 
 {
-	system("cls"); //For Windows
-	// clrscr(); //For Mac/Linux
-	printf("\n=====================================================================================================================================");
-	printf("\n\t\t\t\t    __  ___           __      __                   __   __  __ ___ __ __  __   __  ___");
-	printf("\n\t\t\t\t|_/|__)| | ||_/   /\\ / _  /\\ |__)|  | /\\ |     /| (__\\ |__)|__) | /  (_  /  \\ /__    /");
-	printf("\n\t\t\t\t| \\| \\ | | || \\  /--\\\\__)/--\\| \\ |/\\|/--\\|__    |  __/ |__)|__) | \\____) \\__/ \\__)  / ");
-	printf("\n=====================================================================================================================================\n");
+    int arr[50];
+    int FRONT;
+    int REAR;
+    int size;
+}p;
+
+void inqueue(struct queue *s)
+{
+    if ((s->REAR + 1) % s->size == s->FRONT)
+        printf("Queue OverFlow.\n");
+    else
+    {
+        int item;
+        printf("Enter item: ");
+        scanf("%d", &item);
+        
+        if (s->FRONT == -1)
+        {
+            s->FRONT +=1;
+            s->REAR +=1;
+            s->arr[s->REAR] = item;
+        }
+        else
+        {
+            s->REAR = (s->REAR + 1) % s->size;
+            s->arr[s->REAR] = item;
+        }
+    }
 }
 
-void ins()
+void dequeue(struct queue *s)
 {
-	int x,item;
-	if((first==0 && last==n-1) || (first==last+1))
-	{
-		printf("\n\t\t\t\tQueue Overflow!!\n");
-		return;
-	}
-	printf("\n\t\t\t\tHow many elements do you want to insert now? Note: Max Size Available is %d",n);
-	scanf("%d",&x);
-	for(int i=1;i<=x;i++)
-	{
-		printf("\n\t\t\t\tInput the element for insertion in queue at pos %d : ",i);
-		scanf("%d", &item);
-		if(first==-1)
-		{
-			first=0;
-			last=0;
-		}
-		else
-		{
-			if(last==n-1)
-				last=0;
-			else
-				last+=1;
-		}
-		cq[last]=item;
-	}
+    if (s->FRONT == -1)
+        printf("Queue Empty.\n");
+    else
+    {
+        int item;
+        item = s->arr[s->FRONT];
+        printf("Item %d dequeued.\n", item);
+        if (s->FRONT == s->REAR)
+        {
+            s->FRONT = -1;
+            s->REAR = -1;
+        }
+        else
+            s->FRONT = (s->FRONT + 1) % s->size;
+    }
 }
 
-void del()
+void display(struct queue *s)
 {
-	int x;
-	if(first==-1)
-	{
-		printf("\n\t\t\t\tQueue Underflow!!\n");
-		return ;
-	}
-	printf("\n\t\t\t\tHow many elements do you want to delete?: ");
-	scanf("%d",&x);
-	printf("\n\t\t\t\tElement deleted from queue : ");
-	for(int i=1;i<=x;i++)
-	{
-		printf(" %d ",cq[first]);
-		if(first==last)
-		{
-			first=-1;
-			last=-1;
-		}
-		else
-		{
-			if(first==n-1)
-				first=0;
-			else
-				first+=1;
-		}
-	}
-}
-
-void disp()
-{
-	int first_pos=first,last_pos=last;
-	if(first==-1)
-	{
-		printf("\n\t\t\t\tQueue is empty!!\n");
-		return;
-	}
-	printf("\n\t\t\t\tQueue elements:: ");
-	if(first_pos<=last_pos)
-	{
-		while(first_pos<=last_pos)
-		{
-			printf(" %d ",cq[first_pos]);
-			first_pos++;
-		}
-	}
-	else
-	{
-		while(first_pos<=n-1)
-		{
-			printf(" %d ",cq[first_pos]);
-			first_pos++;
-		}
-		first_pos=0;
-		while(first_pos<=last_pos)
-		{
-			printf(" %d ",cq[first_pos]);
-			first_pos++;
-		}
-	}
-	printf("\n");
+    if (s->FRONT == -1)
+        printf("Queue Empty.\n");
+    else
+    {
+        int i,j;
+        printf("\nQueue\n");
+        
+        for(i = s->FRONT; i != s->REAR; i = (i+1)%s->size)
+            printf("%d\n", s->arr[i]);
+            
+        if(i == s->REAR)
+            printf("%d\n", s->arr[i]);
+            
+        printf("\n");
+                   
+    }
 }
 
 void main()
 {
-	int choice,a;
-	second();
-	do
-	{
-		printf("\n\t\t\t\t===============Circular Queue Operation===============\n\n");
-		printf("\n\t\t\t\tEnter Max Size of Queue: ");
-		scanf("%d",&a);
-		n=a;
-		printf("\n\t\t\t\tMax Size Alloted to queue: %d",n);
-		printf("\n\t\t\t\t1.Insert");
-		printf("\n\t\t\t\t2.Delete");
-		printf("\n\t\t\t\t3.Display");
-		printf("\n\t\t\t\t4.Quit");
-		printf("\n\t\t\t\tEnter your choice: ");
-		scanf("%d",&choice);
-		switch(choice)
-		{
-			case 1 :
-				ins();
-				break;
-			case 2 :
-				del();
-				break;
-			case 3:
-				disp();
-				break;
-			case 4:
-				exit(0);
-			default:
-				printf("\n\t\t\t\tInvalid choice!!\n");
-		}
-	}while(choice!=4);
+    struct queue p;
+    printf("Enter size of Queue(Max 50): ");
+    scanf("%d", &p.size);
+    p.FRONT = -1;
+    p.REAR = -1;
+    
+    int ch;
+    while(1)
+    {
+        printf("Menu\n1.Inqueue\n2.Dequeue\n3.Display\nEnter Choice: ");
+        scanf("%d", &ch);
+        
+        switch(ch)
+        {
+            case 1: inqueue(&p); break;
+            case 2: dequeue(&p); break;
+            case 3: display(&p); break;
+            case 4: exit(1); break;
+        }
+        
+    }
 }
